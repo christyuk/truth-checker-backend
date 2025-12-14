@@ -1,4 +1,4 @@
-module.exports.checkTruth = (text) => {
+function checkTruth(text) {
   const lower = text.toLowerCase();
 
   if (lower.includes("earth") && lower.includes("round")) {
@@ -15,7 +15,9 @@ module.exports.checkTruth = (text) => {
     success: true,
     input: text,
     verdict: "UNKNOWN",
-    confidence: 0.5,
-    explanation: "Not enough information"
+    confidence: 0.4,
+    explanation: "Statement not found in rule base"
   };
-};
+}
+
+module.exports = { checkTruth };
