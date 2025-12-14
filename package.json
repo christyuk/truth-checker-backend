@@ -1,24 +1,26 @@
 {
   "name": "truth-checker-backend",
   "version": "1.0.0",
-  "description": "Truth Checker API backend built with Node.js and Express (no database)",
-  "type": "module",
+  "description": "Production-ready Truth Checker API with clean architecture, validation, and versioned routes",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "lint": "echo \"lint placeholder\"",
+    "test": "echo \"tests placeholder\""
   },
   "engines": {
     "node": ">=18"
   },
   "keywords": [
-    "node",
+    "nodejs",
     "express",
-    "api",
-    "truth-checker",
+    "rest-api",
     "backend",
-    "rest",
-    "validation"
+    "clean-architecture",
+    "validation",
+    "versioned-api"
   ],
   "author": "Christy",
   "license": "MIT",
