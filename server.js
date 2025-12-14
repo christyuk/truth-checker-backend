@@ -1,37 +1,49 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
 import cors from "cors";
-import truthRoutes from "./routes/truth.routes.js";
 
 const app = express();
 
+/* =======================
+   MIDDLEWARE
+======================= */
 app.use(cors());
 app.use(express.json());
 
-// ✅ Root route
+/* =======================
+   ROOT ROUTE (REQUIRED)
+======================= */
 app.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "Truth Checker Backend is running 🚀"
-  });
+  res.send("Truth Checker Backend is running ✅");
 });
 
-// ✅ API base route
+/* =======================
+   API HEALTH CHECK
+======================= */
 app.get("/api", (req, res) => {
   res.json({
     success: true,
-    message: "API working (no database required)"
+    message: "API working (no database)",
   });
 });
 
-// ✅ Feature routes
-app.use("/api", truthRoutes);
+/* =======================
+   MAIN API ENDPOINT
+======================= */
+app.post("/api/check", (req, res) => {
+  const { text } = req.body;
 
+  res.json({
+    success: true,
+    input: text,
+    result: "This is a demo response (no database used)",
+  });
+});
+
+/* =======================
+   SERVER START
+======================= */
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
