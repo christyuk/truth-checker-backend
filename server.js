@@ -1,7 +1,7 @@
-import express from "express";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors");
 
-import truthRoutes from "./routes/truth.routes.js";
+const truthRoutes = require("./routes/truth.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,20 +9,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Root health check (VERY IMPORTANT for cloud)
 app.get("/", (req, res) => {
   res.send("Truth Checker Backend is running ✅");
 });
 
-// API health
-app.get("/api", (req, res) => {
-  res.json({
-    success: true,
-    message: "API working (no database)",
-  });
-});
-
-// Versioned API (BIG TECH STANDARD)
 app.use("/api/v1/truth", truthRoutes);
 
 app.listen(PORT, () => {

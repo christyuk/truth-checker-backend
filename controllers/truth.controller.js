@@ -1,22 +1,22 @@
-import { analyzeTruth } from "../services/truth.service.js";
+const { checkTruth } = require("../services/truth.service");
 
-export const checkTruth = async (req, res) => {
-  try {
-    const { text } = req.body;
+exports.checkTruthHandler = (req, res) => {
+  const { text } = req.body;
 
-    const result = analyzeTruth(text);
-
-    res.status(200).json({
-      success: true,
-      input: text,
-      result,
-    });
-  } catch (error) {
-    res.status(500).json({
+  if (!text) {
+    return res.status(400).json({
       success: false,
-      message: "Internal server error",
+      message: "Text is required"
     });
   }
+
+  const result = checkTruth(text);
+
+  res.json({
+    success: true,
+    input: text,
+    ...result
+  });
 };
 
 
