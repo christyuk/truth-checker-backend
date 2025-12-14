@@ -1,9 +1,9 @@
 import express from "express";
-import { checkTruthController } from "../controllers/truth.controller.js";
-import { validateCheckRequest } from "../middlewares/validate.js";
+import { checkTruth } from "../controllers/truth.controller.js";
+import { validateText } from "../middlewares/validate.js";
 
 const router = express.Router();
 
-router.post("/check", validateCheckRequest, checkTruthController);
+router.post("/check", validateText, checkTruth);
 
 export default router;
