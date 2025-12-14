@@ -1,15 +1,22 @@
-import { checkTruth } from "../services/truth.service.js";
+import { analyzeTruth } from "../services/truth.service.js";
 
-export function checkTruthController(req, res) {
-  const { text } = req.body;
+export const checkTruth = async (req, res) => {
+  try {
+    const { text } = req.body;
 
-  const result = checkTruth(text);
+    const result = analyzeTruth(text);
 
-  res.json({
-    success: true,
-    input: text,
-    ...result
-  });
-}
+    res.status(200).json({
+      success: true,
+      input: text,
+      result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
 
 
