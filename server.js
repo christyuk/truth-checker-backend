@@ -1,46 +1,37 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
+import truthRoutes from "./routes/truth.routes.js";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// Simple truth logic (no DB)
-const facts = {
-  "earth is flat": false,
-  "earth is round": true,
-  "sun rises in east": true,
-  "humans need oxygen": true
-};
-
-// API endpoint
-app.post("/api/truth", (req, res) => {
-  const { statement } = req.body;
-
-  if (!statement) {
-    return res.status(400).json({ error: "Statement is required" });
-  }
-
-  const key = statement.toLowerCase().trim();
-
-  if (facts[key] === undefined) {
-    return res.json({
-      statement,
-      result: "Unknown",
-      explanation: "No verified data found"
-    });
-  }
-
+// ✅ Root route
+app.get("/", (req, res) => {
   res.json({
-    statement,
-    result: facts[key] ? "True" : "False",
-    explanation: facts[key]
-      ? "Verified factual statement"
-      : "This statement is false"
+    success: true,
+    message: "Truth Checker Backend is running 🚀"
   });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+// ✅ API base route
+app.get("/api", (req, res) => {
+  res.json({
+    success: true,
+    message: "API working (no database required)"
+  });
 });
+
+// ✅ Feature routes
+app.use("/api", truthRoutes);
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
