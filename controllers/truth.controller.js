@@ -1,20 +1,15 @@
-export const checkTruth = (req, res) => {
+import { checkTruth } from "../services/truth.service.js";
+
+export function checkTruthController(req, res) {
   const { text } = req.body;
 
-  if (!text) {
-    return res.status(400).json({
-      success: false,
-      message: "Text is required"
-    });
-  }
+  const result = checkTruth(text);
 
-  // Demo logic (Big Tech cares about logic first)
-  const response = {
+  res.json({
     success: true,
     input: text,
-    result: "This is a demo response (no database used)"
-  };
+    ...result
+  });
+}
 
-  res.json(response);
-};
 
