@@ -1,16 +1,23 @@
 openapi: 3.0.0
 info:
   title: Truth Checker API
-  description: Resume-grade backend project
+  description: Simple rule-based truth checking API
   version: 1.0.0
 
 servers:
   - url: https://truth-checker-backend.onrender.com
 
 paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        200:
+          description: Service is healthy
+
   /api/v1/truth/check:
     post:
-      summary: Check truth of a statement
+      summary: Check if a statement is true or false
       requestBody:
         required: true
         content:
@@ -20,7 +27,7 @@ paths:
               properties:
                 text:
                   type: string
-                  example: The earth is round
+                  example: "The earth is round"
       responses:
         200:
           description: Truth check result
