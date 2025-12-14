@@ -1,10 +1,12 @@
 const express = require("express");
-const { checkTruth } = require("../controllers/truth.controller");
-const validate = require("../middlewares/validate");
-
 const router = express.Router();
+const validate = require("../middlewares/validate");
+const truthService = require("../services/truth.service");
 
-// POST /api/v1/truth/check
-router.post("/check", validate, checkTruth);
+router.post("/check", validate, (req, res) => {
+  const { text } = req.body;
+  const result = truthService.checkTruth(text);
+  res.json(result);
+});
 
 module.exports = router;

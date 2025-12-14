@@ -1,49 +1,34 @@
 const express = require("express");
 const cors = require("cors");
-const swaggerUi = require("swagger-ui-express");
-const YAML = require("yamljs");
-const path = require("path");
 
 const truthRoutes = require("./routes/truth.routes");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./docs/swagger");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Load swagger yaml
-const swaggerDocument = YAML.load(
-  path.join(__dirname, "docs", "swagger.yaml")
-);
-
-// Middlewares
+/* Middlewares */
 app.use(cors());
 app.use(express.json());
 
-// Root health check
+/* Root */
 app.get("/", (req, res) => {
   res.send("Truth Checker Backend is running ✅");
 });
 
-// API health
-app.get("/api", (req, res) => {
-  res.json({ success: true, message: "API working (no database)" });
+/* Health check */
+app.get("/health", (req, res) => {
+  res.json({ status: "UP" });
 });
 
-// Swagger Docs
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// API Routes
+/* API routes */
 app.use("/api/v1/truth", truthRoutes);
 
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({
-    success: false,
-    message: "Internal Server Error",
-  });
-});
+/* Swagger Docs */
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Start server
+/* Start server */
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

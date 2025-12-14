@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
   if (!text || typeof text !== "string") {
     return res.status(400).json({
       success: false,
-      message: "Invalid input: 'text' is required",
+      message: "Invalid input. 'text' is required."
     });
   }
 
