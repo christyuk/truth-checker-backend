@@ -1,21 +1,16 @@
-const { checkTruth } = require("../services/truth.service");
+const truthService = require("../services/truth.service");
 
-exports.checkTruthHandler = (req, res) => {
+exports.checkTruth = (req, res) => {
   const { text } = req.body;
 
-  if (!text) {
-    return res.status(400).json({
-      success: false,
-      message: "Text is required"
-    });
-  }
-
-  const result = checkTruth(text);
+  const result = truthService.analyze(text);
 
   res.json({
     success: true,
     input: text,
-    ...result
+    verdict: result.verdict,
+    confidence: result.confidence,
+    explanation: result.explanation,
   });
 };
 
