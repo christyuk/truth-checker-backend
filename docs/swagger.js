@@ -13,8 +13,51 @@ const options = {
         url: "https://truth-checker-backend.onrender.com",
       },
     ],
+    paths: {
+      "/api/v1/truth/check": {
+        post: {
+          summary: "Check truth of a statement",
+          description: "Returns whether the given statement is true or false",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    text: {
+                      type: "string",
+                      example: "The earth is round",
+                    },
+                  },
+                  required: ["text"],
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: "Truth check result",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      verdict: { type: "string" },
+                      confidence: { type: "number" },
+                      explanation: { type: "string" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
-  apis: ["./routes/*.js"],
+  apis: [], // we are defining paths manually
 };
 
 module.exports = swaggerJsdoc(options);
