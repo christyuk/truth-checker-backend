@@ -1,9 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-const swaggerUi = require("swagger-ui-express");
-const swaggerSpec = require("./docs/swagger");
 
 const truthRoutes = require("./routes/truth.routes");
+
+// ✅ CORRECT PATH (this fixes your crash)
+const { swaggerUi, swaggerSpec } = require("./docs/swagger");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,22 +12,23 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-/* ROOT */
+// Root
 app.get("/", (req, res) => {
   res.send("Truth Checker Backend is running ✅");
 });
 
-/* HEALTH CHECK (RENDER NEEDS THIS) */
+// Health check (Render friendly)
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK" });
+  res.json({ status: "OK" });
 });
 
-/* API ROUTES */
+// API routes
 app.use("/api/v1/truth", truthRoutes);
 
-/* SWAGGER */
+// Swagger docs
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
