@@ -1,22 +1,25 @@
 function checkTruth(text) {
   const lower = text.toLowerCase();
 
+  let verdict = "UNKNOWN";
+  let confidence = 0.5;
+
   if (lower.includes("earth") && lower.includes("round")) {
-    return {
-      success: true,
-      input: text,
-      verdict: "TRUE",
-      confidence: 0.95,
-      explanation: "Rule-based demo logic (no AI, no database)"
-    };
+    verdict = "TRUE";
+    confidence = 0.95;
+  }
+
+  if (lower.includes("earth") && lower.includes("flat")) {
+    verdict = "FALSE";
+    confidence = 0.95;
   }
 
   return {
     success: true,
     input: text,
-    verdict: "UNKNOWN",
-    confidence: 0.4,
-    explanation: "Statement not found in rule base"
+    verdict,
+    confidence,
+    explanation: "Rule-based demo logic (no AI, no database)",
   };
 }
 
