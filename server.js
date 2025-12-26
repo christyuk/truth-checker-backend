@@ -1,22 +1,21 @@
 const express = require("express");
 const cors = require("cors");
 
+const authRoutes = require("./routes/auth");
+
 const app = express();
 
-// MIDDLEWARE
 app.use(cors());
 app.use(express.json());
 
-// ROUTES
-const authRoutes = require("./routes/auth");
-app.use("/api/auth", authRoutes);
-
-// TEST ROOT
+// health check
 app.get("/", (req, res) => {
   res.send("Truth Checker Backend is running ✅");
 });
 
-// START SERVER
+// AUTH ROUTES
+app.use("/api/auth", authRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
