@@ -1,22 +1,32 @@
 const express = require("express");
-const cors = require("cors");
+const router = express.Router();
 
-const authRoutes = require("./routes/auth");
+// TEMP hardcoded user (for testing)
+const USER = {
+  username: "test",
+  password: "test123",
+};
 
-const app = express();
+// POST /api/auth/login
+router.post("/login", (req, res) => {
+  const { username, password } = req.body;
 
-app.use(cors());
-app.use(express.json());
+  if (!username || !password) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
 
-// health check
-app.get("/", (req, res) => {
-  res.send("Truth Checker Backend is running ✅");
+  if (username === USER.username && password === USER.password) {
+    return res.json({
+      success: true,
+      message: "Login successful",
+      token: "dummy-token-123",
+    });
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: "Invalid username or password",
+  });
 });
 
-// AUTH ROUTES
-app.use("/api/auth", authRoutes);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports = router;
