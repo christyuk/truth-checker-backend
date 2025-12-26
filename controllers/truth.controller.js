@@ -1,17 +1,12 @@
-const truthService = require("../services/truth.service");
+import { analyzeTruth } from "../services/truth.service.js";
 
-exports.checkTruth = (req, res) => {
+export function checkTruth(req, res) {
   const { text } = req.body;
 
-  const result = truthService.analyze(text);
+  const result = analyzeTruth(text);
 
   res.json({
     success: true,
-    input: text,
-    verdict: result.verdict,
-    confidence: result.confidence,
-    explanation: result.explanation,
+    data: result
   });
-};
-
-
+}

@@ -1,38 +1,42 @@
 const express = require("express");
 const cors = require("cors");
 
-const truthRoutes = require("./routes/truth.routes");
-
-// ✅ Swagger
-const swaggerUi = require("swagger-ui-express");
-const swaggerSpec = require("./docs/swagger");
-
 const app = express();
-
-// ---------- MIDDLEWARE ----------
 app.use(cors());
 app.use(express.json());
 
-// ---------- ROOT ----------
+const PORT = process.env.PORT || 3000;
+
+/* TEST ROOT */
 app.get("/", (req, res) => {
   res.send("Truth Checker Backend is running ✅");
 });
 
-// ---------- HEALTH CHECK ----------
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK" });
+/* LOGIN API */
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  // HARD-CODED TEST USER (for now)
+  if (username === "test" && password === "test123") {
+    return res.json({
+      success: true,
+      token: "fake-jwt-token-123",
+    });
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: "Invalid credentials",
+  });
 });
 
-// ---------- API ROUTES ----------
-app.use("/api/v1/truth", truthRoutes);
-
-// ---------- SWAGGER ----------
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// ---------- START SERVER ----------
-const PORT = process.env.PORT || 3000;
+/* TRUTH API (protected example) */
+app.post("/truth", (req, res) => {
+  res.json({
+    result: "This looks true ✅",
+  });
+});
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log("Backend running on port", PORT);
 });
-
