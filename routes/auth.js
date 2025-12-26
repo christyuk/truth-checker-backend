@@ -2,25 +2,19 @@ import express from "express";
 
 const router = express.Router();
 
-// TEMP TEST USER
-const USER = {
-  username: "test",
-  password: "test123",
-};
-
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  if (username === USER.username && password === USER.password) {
+  if (username === "test" && password === "test123") {
     return res.json({
       success: true,
-      message: "Login successful",
+      message: "Login successful"
     });
   }
 
-  return res.status(401).json({
+  res.status(401).json({
     success: false,
-    message: "Invalid credentials",
+    message: "Invalid credentials"
   });
 });
 
