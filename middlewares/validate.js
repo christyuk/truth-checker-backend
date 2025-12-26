@@ -1,10 +1,10 @@
-module.exports = (req, res, next) => {
+export const validateText = (req, res, next) => {
   const { text } = req.body;
 
-  if (!text || typeof text !== "string") {
+  if (!text || text.length < 5) {
     return res.status(400).json({
       success: false,
-      message: "Invalid input. 'text' is required."
+      error: { message: "Text must be at least 5 characters" }
     });
   }
 

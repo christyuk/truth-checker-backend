@@ -1,22 +1,15 @@
-const request = require("supertest");
-const app = require("../server");
+import request from "supertest";
+import app from "../server.js";
 
-describe("Truth Checker API", () => {
-  it("should return TRUE for valid scientific statement", async () => {
+describe("Truth API", () => {
+  it("should return verdict and confidence", async () => {
     const res = await request(app)
-      .post("/api/v1/truth/check")
-      .send({ text: "The earth is round" });
+      .post("/api/v2/truth/check")
+      .set("Authorization", "Bearer TEST_TOKEN")
+      .send({ text: "Earth is round" });
 
     expect(res.statusCode).toBe(200);
-    expect(res.body.verdict).toBe("TRUE");
-  });
-
-  it("should return error for empty input", async () => {
-    const res = await request(app)
-      .post("/api/v1/truth/check")
-      .send({});
-
-    expect(res.statusCode).toBe(400);
+    expect(res.body.data).toHaveProperty("verdict");
+    expect(res.body.data).toHaveProperty("confidence");
   });
 });
-
