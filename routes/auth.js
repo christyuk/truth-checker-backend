@@ -1,14 +1,20 @@
-const express = require("express");
+import express from "express";
+
 const router = express.Router();
+
+// TEMP TEST USER
+const USER = {
+  username: "test",
+  password: "test123",
+};
 
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  if (username === "test" && password === "test123") {
+  if (username === USER.username && password === USER.password) {
     return res.json({
       success: true,
       message: "Login successful",
-      token: "dummy-token",
     });
   }
 
@@ -18,4 +24,4 @@ router.post("/login", (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;
