@@ -1,22 +1,25 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+
 import authRoutes from "./routes/auth.js";
+import truthRoutes from "./routes/truth.js";
 
-dotenv.config();
-
-const app = express();
+const app = express(); // ✅ MUST come BEFORE app.use
 
 app.use(cors());
 app.use(express.json());
 
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/v2/truth", truthRoutes);
+
+// Health check
 app.get("/", (req, res) => {
   res.send("Truth Checker Backend is running ✅");
 });
 
-app.use("/api/auth", authRoutes);
-
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+  console.log(`Server running on port ${PORT}`);
 });
