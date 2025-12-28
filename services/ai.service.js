@@ -1,14 +1,19 @@
-// services/ai.service.js
-class AIService {
-  async analyze(text) {
-    // mock logic (replace with real AI later)
-    const isTrue = text.toLowerCase().includes("earth");
+import OpenAI from "openai";
 
-    return {
-      verdict: isTrue ? "TRUE" : "FALSE",
-      confidence: isTrue ? 0.93 : 0.45
-    };
-  }
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function checkTruthWithAI(text) {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "user",
+        content: text,
+      },
+    ],
+  });
+
+  return response.choices[0].message.content;
 }
-
-export default new AIService();
