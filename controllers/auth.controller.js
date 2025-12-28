@@ -1,18 +1,12 @@
-import { validateUser } from "../services/auth.service.js";
-import { generateToken } from "../utils/token.js";
+const { loginUser } = require("../services/auth.service");
 
-export function login(req, res) {
+exports.login = async (req, res) => {
   const { username, password } = req.body;
 
-  const user = validateUser(username, password);
-
-  if (!user) {
-    return res.status(401).json({
-      message: "Invalid username or password",
-    });
+  try {
+    const result = await loginUser(username, password);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(401).json({ message: "Invalid credentials" });
   }
-
-  const token = generateToken(user);
-
-  res.json({ token });
-}
+};

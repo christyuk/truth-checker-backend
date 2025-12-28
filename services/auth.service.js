@@ -1,7 +1,17 @@
-export function validateUser(username, password) {
-  // demo login (hardcoded)
-  if (username === "admin" && password === "password123") {
-    return { id: 1, username: "admin" };
+const jwt = require("jsonwebtoken");
+
+const loginUser = async (username, password) => {
+  console.log("LOGIN ATTEMPT:", username, password);
+
+  if (username === "test" && password === "test") {
+    const token = jwt.sign({ username }, "secretkey", {
+      expiresIn: "1h"
+    });
+
+    return { token };
   }
-  return null;
-}
+
+  throw new Error("Invalid credentials");
+};
+
+module.exports = { loginUser };

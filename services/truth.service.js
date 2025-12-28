@@ -1,10 +1,22 @@
-export const analyzeTruth = (text) => {
-  if (!text || text.length < 5) {
-    return { verdict: "UNKNOWN", confidence: 0.1 };
+async function checkTruth(text) {
+  if (!text || text.trim() === "") {
+    return {
+      verdict: "UNKNOWN",
+      explanation: "No claim provided"
+    };
+  }
+
+  if (text.toLowerCase().includes("earth")) {
+    return {
+      verdict: "TRUE",
+      explanation: "The Earth is scientifically proven to be round."
+    };
   }
 
   return {
-    verdict: "TRUE",
-    confidence: 0.93
+    verdict: "UNKNOWN",
+    explanation: "This claim cannot be verified with available data."
   };
-};
+}
+
+module.exports = { checkTruth };
