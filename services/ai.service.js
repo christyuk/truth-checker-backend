@@ -1,13 +1,17 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
+const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function checkTruthWithAI(text) {
-  const response = await openai.chat.completions.create({
+export async function analyzeClaim(text) {
+  const response = await client.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
+      {
+        role: "system",
+        content: "You are a fact-checking assistant.",
+      },
       {
         role: "user",
         content: text,
