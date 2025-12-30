@@ -1,18 +1,23 @@
-import { analyzeClaim } from "../services/ai.service.js";
+const { analyzeTruth } = require("../services/ai.service");
 
-export async function checkTruth(req, res) {
+exports.checkTruth = async (req, res) => {
   try {
     const { text } = req.body;
 
-    const result = await analyzeClaim(text);
+    if (!text) {
+      return res.status(400).json({ message: "Text is required" });
+    }
+
+    const result = await analyzeTruth(text);
 
     res.json({
-      verdict: "TRUE",
-      confidence: "93%",
-      explanation: result,
-      sources: ["NASA", "ESA"],
+      claim: text,
+      verdict: result.verdict,
+      confidence: result.confidence,
+      explanation: result.explanation,
     });
-  } catch (err) {
-    res.status(500).json({ message: "AI check failed" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "AI error" });
   }
-}
+};

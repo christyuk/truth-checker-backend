@@ -1,21 +1,13 @@
-async function checkTruth(text) {
-  if (!text || text.trim() === "") {
-    return {
-      verdict: "UNKNOWN",
-      explanation: "No claim provided"
-    };
-  }
+const { analyzeClaim } = require("./ai.service");
 
-  if (text.toLowerCase().includes("earth")) {
-    return {
-      verdict: "TRUE",
-      explanation: "The Earth is scientifically proven to be round."
-    };
-  }
+async function checkTruth(text) {
+  const result = await analyzeClaim(text);
 
   return {
-    verdict: "UNKNOWN",
-    explanation: "This claim cannot be verified with available data."
+    claim: text,
+    verdict: result.verdict,
+    confidence: result.confidence,
+    explanation: result.explanation
   };
 }
 

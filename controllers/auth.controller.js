@@ -1,29 +1,55 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const users = [];
+exports.register = async (req, res) => {
+  const { username, password } = req.body;
 
-export async function register(req, res) {
-  const { email, password } = req.body;
+  try {
+    const exists = await User.findOne({ username });
+    if (exists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
 
-  const hashed = await bcrypt.hash(password, 10);
-  users.push({ email, password: hashed });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  res.json({ message: "User registered" });
-}
+    await User.create({
+      username,
+      password: hashedPassword
+    });
 
-export async function login(req, res) {
-  const { email, password } = req.body;
+    res.json({ message: "User registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
-  const user = users.find((u) => u.email === email);
-  if (!user) return res.status(401).json({ message: "Invalid credentials" });
+exports.login = async (req, res) => {
+  const { username, password } = req.body;
 
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(401).json({ message: "Invalid credentials" });
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
-  res.json({ token });
-}
+    // 🔑 TOKEN
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({
+      message: "Login successful",
+      token
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
