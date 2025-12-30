@@ -1,22 +1,33 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
-const connectDB = require("./config/database");
-const authRoutes = require("./routes/authRoutes");
-const truthRoutes = require("./routes/truthRoutes");
+dotenv.config();
 
 const app = express();
-
-connectDB();
-
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/truth", truthRoutes);
+app.get("/", (req, res) => {
+  res.send("Truth Checker Backend is running");
+});
+
+app.post("/api/truth/check", (req, res) => {
+  const { text } = req.body;
+
+  if (!text) {
+    return res.status(400).json({ error: "Text is required" });
+  }
+
+  res.json({
+    verdict: true,
+    confidence: 0.95,
+    explanation:
+      "Scientific consensus confirms that the Earth is round (an oblate spheroid)."
+  });
+});
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
