@@ -2,24 +2,28 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-/* -------------------- MIDDLEWARE -------------------- */
-app.use(express.json());
-
+/* ===== CORS (VERY IMPORTANT) ===== */
 app.use(
   cors({
-    origin: "*", // allow Vercel frontend
-    methods: ["GET", "POST", "OPTIONS"],
+    origin: [
+      "http://localhost:3000",
+      "https://frontend-six-sable-30.vercel.app"
+    ],
+    methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-/* -------------------- HEALTH CHECK -------------------- */
+app.use(express.json());
+
+/* ===== HEALTH CHECK ===== */
 app.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-/* -------------------- LOGIN (DEMO) -------------------- */
+/* ===== LOGIN (DEMO) ===== */
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -30,13 +34,10 @@ app.post("/login", (req, res) => {
     });
   }
 
-  return res.status(401).json({
-    success: false,
-    message: "Invalid credentials",
-  });
+  res.status(401).json({ success: false, message: "Invalid credentials" });
 });
 
-/* -------------------- TRUTH CHECK -------------------- */
+/* ===== TRUTH CHECK ===== */
 app.post("/check", (req, res) => {
   const { claim } = req.body;
 
@@ -45,22 +46,14 @@ app.post("/check", (req, res) => {
   }
 
   // Simple demo logic
-  const trueStatements = [
-    "earth is round",
-    "the earth is round",
-    "sun rises in the east",
-  ];
+  if (claim.toLowerCase().includes("earth")) {
+    return res.json({ result: "TRUE" });
+  }
 
-  const result = trueStatements.includes(claim.toLowerCase())
-    ? "TRUE"
-    : "FALSE";
-
-  res.json({ result });
+  res.json({ result: "UNKNOWN" });
 });
 
-/* -------------------- START SERVER -------------------- */
-const PORT = process.env.PORT || 5000;
-
+/* ===== START SERVER ===== */
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Backend running on port ${PORT}`);
 });
