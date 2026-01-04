@@ -1,59 +1,69 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-
-/* ===== CORS (VERY IMPORTANT) ===== */
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://frontend-six-sable-30.vercel.app"
-    ],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
+app.use(cors());
 app.use(express.json());
 
-/* ===== HEALTH CHECK ===== */
+const JWT_SECRET = "demo_secret_key";
+
+/**
+ * HEALTH CHECK
+ */
 app.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-/* ===== LOGIN (DEMO) ===== */
+/**
+ * LOGIN (DEMO)
+ */
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  if (username === "admin" && password === "1234") {
-    return res.json({
-      success: true,
-      token: "dummy-token-123",
+  // demo credentials
+  if (username === "admin" && password === "admin123") {
+    const token = jwt.sign({ username }, JWT_SECRET, {
+      expiresIn: "1h",
     });
+
+    return res.json({ token });
   }
 
-  res.status(401).json({ success: false, message: "Invalid credentials" });
+  res.status(401).json({ error: "Invalid credentials" });
 });
 
-/* ===== TRUTH CHECK ===== */
-app.post("/check", (req, res) => {
-  const { claim } = req.body;
+/**
+ * AUTH MIDDLEWARE
+ */
+function auth(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header) return res.sendStatus(401);
 
-  if (!claim) {
-    return res.status(400).json({ error: "No claim provided" });
+  const token = header.split(" ")[1];
+
+  try {
+    jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    res.sendStatus(403);
   }
+}
 
-  // Simple demo logic
-  if (claim.toLowerCase().includes("earth")) {
-    return res.json({ result: "TRUE" });
-  }
+/**
+ * TRUTH CHECK
+ */
+app.post("/check", auth, (req, res) => {
+  const { text } = req.body;
 
-  res.json({ result: "UNKNOWN" });
+  const isTrue =
+    text.toLowerCase().includes("earth") &&
+    text.toLowerCase().includes("round");
+
+  res.json({ result: isTrue ? "TRUE" : "FALSE" });
 });
 
-/* ===== START SERVER ===== */
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+  console.log("Server running on port", PORT);
 });
