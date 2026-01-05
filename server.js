@@ -2,14 +2,22 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: "*" }));
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use(express.json());
 
+// ✅ Health check
 app.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
+// ✅ LOGIN API (MATCHES FRONTEND DEMO)
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -17,27 +25,25 @@ app.post("/api/login", (req, res) => {
 
   if (username === "test" && password === "test123") {
     return res.json({
-      success: true,
-      token: "demo-token"
+      token: "demo-token",
     });
   }
 
   return res.status(401).json({
-    success: false,
-    message: "Invalid credentials"
+    message: "Invalid credentials",
   });
 });
 
+// ✅ TRUTH CHECK API
 app.post("/api/check", (req, res) => {
   const { text } = req.body;
 
   res.json({
     verdict: "Likely TRUE",
-    explanation: "Earth is scientifically proven to be round."
+    explanation: "Earth is scientifically proven to be round.",
   });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("Backend running on port", PORT);
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
 });
