@@ -6,7 +6,6 @@ const router = express.Router();
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  // Demo credentials
   if (username === "test" && password === "test123") {
     const token = jwt.sign(
       { username },
